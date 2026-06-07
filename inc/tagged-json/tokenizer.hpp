@@ -17,10 +17,13 @@ public:
 private:
     void eat_whitespace();
     bool read_comment(token & t);
+    bool read_keyword(token & t, std::string const & keyword, token_type type);
+    bool read_uint(token & t);
     char next_char();
     char peek() const;
 
     std::string const value_;
+    bool done;
     size_t pos;
     size_t line;
     size_t line_pos;

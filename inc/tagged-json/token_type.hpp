@@ -6,24 +6,26 @@ namespace tagged_json
 
 enum class token_type
 {
-    comment,
-    none,
-    bool_true,
-    bool_false,
-    uint,
-    sint,
-    f64,
-    str,
-    bin,
-    seq_begin,
-    seq_end,
-    ordered_map_begin,
-    ordered_map_end,
-    map_begin,
-    map_end,
-    tag,
+    comment,                // #*$
+    none,                   // keyword: none
+    bool_true,              // keyword: true
+    bool_false,             // keyword: false
+    uint,                   // [0-9]+
+    sint,                   // [+\-][0-9]+
+    f64,                    // [+\-][0-9]+\.[0-9]+
+    str,                    // "[^"]*"
+    bin,                    // hex:[0-9a-f-A-F]*, b64:[0-9a-zA-Z\+/]*
+    seq_begin,              // [
+    seq_end,                // ]
+    item_separator,         // ,
+    ordered_map_begin,      // (
+    ordered_map_end,        // )
+    map_begin,              // {
+    map_end,                // }
+    key_value_separator,    // :
+    tag,                    // @\w+
+    trailer,                // ;
     error,
-    trailer,
     end
 };
 

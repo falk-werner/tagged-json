@@ -21,9 +21,9 @@
 | Bool | `true` `false` | Boolean value |
 | Unsigned int | `123` | Unsigned int |
 | Signed int | `-123` `+123` | Signed int |
-| Float | `f123.0` | Float |
+| Float | `123.0` | Float |
 | String | `"Hello"` | String |
-| Binary Data | `b64_` | Binary data, base64 encoded |
+| Binary Data | `b64:` | Binary data, base64 encoded |
 | Sequence | `[1,2,3]` | Sequence |
 | Ordered Map | `("key": "value")` | Ordered map. |
 | Unordered Map | `{"key": "value"}` | Unordered map. |
@@ -73,7 +73,8 @@ f1.0
 ### Binary Data
 
 ```
-b64_1234
+hex:1234
+b64:abcd
 ```
 
 ### Sequences
