@@ -25,14 +25,26 @@ TEST(tokenizer, complex)
 {
     std::string const text = R"(
     # This is a comment.
-    [none, true, false, 42]
-    ;
+    {
+        "version": 2,
+        "list": [none, true, false, 42],
+        "ordered": ( "foo": "bar", "baz": none )
+    };
     garbage at the end is ignored
     )";
     tagged_json::tokenizer tokenizer(text);
 
     std::vector<tagged_json::token_type> tokens = {
         tagged_json::token_type::comment,
+        tagged_json::token_type::map_begin,
+
+        tagged_json::token_type::str,
+        tagged_json::token_type::key_value_separator,
+        tagged_json::token_type::uint,
+        tagged_json::token_type::item_separator,
+
+        tagged_json::token_type::str,
+        tagged_json::token_type::key_value_separator,
         tagged_json::token_type::seq_begin,
         tagged_json::token_type::none,
         tagged_json::token_type::item_separator,
@@ -41,7 +53,22 @@ TEST(tokenizer, complex)
         tagged_json::token_type::bool_false,
         tagged_json::token_type::item_separator,
         tagged_json::token_type::uint,
-        tagged_json::token_type::seq_end
+        tagged_json::token_type::seq_end,
+        tagged_json::token_type::item_separator,
+
+        tagged_json::token_type::str,
+        tagged_json::token_type::key_value_separator,
+        tagged_json::token_type::ordered_map_begin,
+        tagged_json::token_type::str,
+        tagged_json::token_type::key_value_separator,
+        tagged_json::token_type::str,
+        tagged_json::token_type::item_separator,
+        tagged_json::token_type::str,
+        tagged_json::token_type::key_value_separator,
+        tagged_json::token_type::none,
+        tagged_json::token_type::ordered_map_end,
+
+        tagged_json::token_type::map_end
     };
 
     tagged_json::token token;
