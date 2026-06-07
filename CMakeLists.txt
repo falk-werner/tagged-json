@@ -21,6 +21,8 @@ include(GoogleTest)
 
 add_executable(alltests
     test-src/test_tokenizer.cpp
+    test-src/test_tokenize_keywords.cpp
+    test-src/test_tokenize_uint.cpp
 )
 
 target_link_libraries(alltests PRIVATE tagged-json GTest::gtest GTest::gtest_main)

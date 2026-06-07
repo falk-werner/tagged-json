@@ -147,9 +147,18 @@ bool tokenizer::read_uint(token & t)
 {
     uint64_t value = 0;
     while (is_digit(peek())) {
+        uint64_t const old_value = value;
+
         auto const c = next_char();
         value *= 10;
         value += c - '0';
+
+        if (old_value > value) {
+            t.type = token_type::error;
+            t.value = "uint overflow";
+            done = true;
+            return false;
+        }
     }
 
     t.type = token_type::uint;
