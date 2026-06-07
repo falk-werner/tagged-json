@@ -23,7 +23,7 @@
 | Signed int | `-123` `+123` | Signed int |
 | Float | `123.0` | Float |
 | String | `"Hello"` | String |
-| Binary Data | `b64:` | Binary data, base64 encoded |
+| Binary Data | `b'1234'` | Binary data, base64 encoded |
 | Sequence | `[1,2,3]` | Sequence |
 | Ordered Map | `("key": "value")` | Ordered map. |
 | Unordered Map | `{"key": "value"}` | Unordered map. |

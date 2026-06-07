@@ -14,7 +14,7 @@ enum class token_type
     sint,                   // [+\-][0-9]+
     f64,                    // [+\-][0-9]+\.[0-9]+
     str,                    // "[^"]*"
-    bin,                    // hex:[0-9a-f-A-F]*, b64:[0-9a-zA-Z\+/]*
+    bin,                    // b'[0-9a-zA-Z\+/]*'
     seq_begin,              // [
     seq_end,                // ]
     item_separator,         // ,

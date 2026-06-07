@@ -19,6 +19,7 @@ private:
     bool read_comment(token & t);
     bool read_keyword(token & t, std::string const & keyword, token_type type);
     bool read_uint(token & t);
+    bool read_sint(token & t, bool is_negative);
     bool read_str(token & t);
     char next_char();
     char peek() const;

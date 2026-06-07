@@ -60,6 +60,10 @@ bool tokenizer::next(token & t) noexcept
                 return read_keyword(t, "true", token_type::bool_true);
             case 'f':
                 return read_keyword(t, "false", token_type::bool_false);
+            case '+':
+                return read_sint(t, false);
+            case '-':
+                return read_sint(t, true);
             case '\"':
                 return read_str(t);
             case '[':
@@ -167,6 +171,43 @@ bool tokenizer::read_uint(token & t)
     t.u_value = value;
     return true;
 }
+
+bool tokenizer::read_sint(token & t,  bool is_negative)
+{
+    if (read_uint(t)) {
+        if (!is_negative) {
+            if (t.u_value <= INT64_MAX) {
+                t.type = token_type::sint;
+                t.i_value = static_cast<int64_t>(t.u_value);
+                return true;
+            }
+            else {
+                t.type = token_type::error;
+                t.value = "integer overflow";
+                return false;
+            }
+        }
+        else {
+            if (t.u_value <= (static_cast<uint64_t>(INT64_MAX) + 1)) {
+                t.type = token_type::sint;
+                t.u_value = ~t.u_value + 1;
+                void * p = reinterpret_cast<void*>(&(t.u_value));
+                t.i_value = *(reinterpret_cast<int64_t*>(p));
+                return true;
+            }
+            else {
+                t.type = token_type::error;
+                t.value = "integer underflow";
+                return false;
+            }
+        }
+
+    }
+    else {
+        return false;
+    }
+}
+
 
 bool tokenizer::read_str(token & t)
 {

@@ -13,6 +13,7 @@ struct token
     token_type type;
     std::string value;
     uint64_t u_value;
+    int64_t i_value;
 };
 
 }

@@ -88,4 +88,3 @@ TEST(tokenizer, complex)
     ASSERT_FALSE(result);
     ASSERT_EQ(tagged_json::token_type::end, token.type);
 }
-
