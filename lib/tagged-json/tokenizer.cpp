@@ -60,6 +60,8 @@ bool tokenizer::next(token & t) noexcept
                 return read_keyword(t, "true", token_type::bool_true);
             case 'f':
                 return read_keyword(t, "false", token_type::bool_false);
+            case '\"':
+                return read_str(t);
             case '[':
                 t.type = token_type::seq_begin;
                 return true;
@@ -165,6 +167,50 @@ bool tokenizer::read_uint(token & t)
     t.u_value = value;
     return true;
 }
+
+bool tokenizer::read_str(token & t)
+{
+    std::string value;
+
+    for(;;) {
+        char const c = next_char();
+        switch (c)
+        {
+            case '\"':
+                t.type = token_type::str;
+                t.value = value;
+                return true;
+            case '\\':
+                {
+                    char const n = next_char();
+                    switch (n)
+                    {
+                        case '\\':
+                            value += '\\';
+                            break;
+                        case '\"':
+                            value += '\"';
+                            break;
+                        default:
+                            t.type = token_type::error;
+                            t.value = "invalid escape sequence";
+                            done = false;
+                            return false;
+                    }
+                }
+                break;
+            case '\0':
+                t.type = token_type::error;
+                t.value = "unexpected end of string";
+                            done = false;
+                return false;
+            default:
+                value += c;
+                break;
+        }
+    }
+}
+
 
 char tokenizer::next_char()
 {
