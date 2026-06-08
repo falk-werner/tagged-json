@@ -25,6 +25,7 @@ add_executable(alltests
     test-src/test_tokenize_keywords.cpp
     test-src/test_tokenize_uint.cpp
     test-src/test_tokenize_sint.cpp
+    test-src/test_tokenize_f64.cpp
     test-src/test_tokenize_string.cpp
 )
 

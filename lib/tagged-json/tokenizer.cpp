@@ -39,6 +39,8 @@ bool tokenizer::next(token & t) noexcept
     {
         t.value = "";
         t.u_value = 0;
+        t.i_value = 0;
+        t.f64_value = 0.0;
 
         eat_whitespace();
 
@@ -151,30 +153,44 @@ bool tokenizer::read_keyword(token & t, std::string const & keyword, token_type 
 
 bool tokenizer::read_uint(token & t)
 {
-    uint64_t value = 0;
+    t.value = "";
+    t.u_value = 0;
     while (is_digit(peek())) {
-        uint64_t const old_value = value;
+        uint64_t const old_value = t.u_value;
 
         auto const c = next_char();
-        value *= 10;
-        value += c - '0';
+        t.value += c;
+        t.u_value *= 10;
+        t.u_value += c - '0';
 
-        if (old_value > value) {
+        if (old_value > t.u_value) {
             t.type = token_type::error;
             t.value = "uint overflow";
+            t.u_value = 0;
             done = true;
             return false;
         }
     }
 
+    auto const next = peek();
+    if ((next == '.') || (next == 'e') || (next == 'E')) {
+        return read_f64(t);
+    }
+
     t.type = token_type::uint;
-    t.u_value = value;
     return true;
 }
 
 bool tokenizer::read_sint(token & t,  bool is_negative)
 {
     if (read_uint(t)) {
+        if (t.type == token_type::f64) {
+            if (is_negative) {
+                t.f64_value = -t.f64_value;
+            }
+            return true;
+        }
+
         if (!is_negative) {
             if (t.u_value <= INT64_MAX) {
                 t.type = token_type::sint;
@@ -204,6 +220,47 @@ bool tokenizer::read_sint(token & t,  bool is_negative)
 
     }
     else {
+        return false;
+    }
+}
+
+bool tokenizer::read_f64(token & t)
+{
+    auto next = peek();
+    if (next == '.') {
+        t.value += next_char();
+        while (is_digit(peek())) {
+            t.value += next_char();
+        }
+    }
+
+    next = peek();
+    if ((next == 'e') || (next == 'E')) {
+        t.value += next_char();
+
+        next = peek();
+        if ((next == '-') || (next == '+')) {
+            t.value += next_char();
+        }
+
+        while (is_digit(peek())) {
+            t.value += next_char();
+        }
+    }
+
+    try {
+        t.f64_value = std::stod(t.value);
+        t.type = token_type::f64;
+        return true;
+    }
+    catch (std::exception const & ex) {
+        t.value = ex.what();
+        t.type = token_type::error;
+        return false;
+    }
+    catch (...) {
+        t.value = "invalid f64 value";
+        t.type = token_type::error;
         return false;
     }
 }

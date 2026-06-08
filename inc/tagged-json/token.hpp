@@ -14,6 +14,7 @@ struct token
     std::string value;
     uint64_t u_value;
     int64_t i_value;
+    double f64_value;
 };
 
 }
