@@ -92,6 +92,8 @@ bool tokenizer::next(token & t) noexcept
             case ':':
                 t.type = token_type::key_value_separator;
                 return true;
+            case '@':
+                return read_tag(t);
             case ';':
                 t.type = token_type::trailer;
                 done = true;
@@ -309,6 +311,15 @@ bool tokenizer::read_str(token & t)
     }
 }
 
+bool tokenizer::read_tag(token & t)
+{
+    while ((!is_whitespace(peek())) && ('\0' != peek())) {
+        t.value += next_char();
+    }
+
+    t.type = token_type::tag;
+    return true;
+}
 
 char tokenizer::next_char()
 {

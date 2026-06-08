@@ -27,6 +27,7 @@ add_executable(alltests
     test-src/test_tokenize_sint.cpp
     test-src/test_tokenize_f64.cpp
     test-src/test_tokenize_string.cpp
+    test-src/test_tokenize_tag.cpp
 )
 
 target_link_libraries(alltests PRIVATE tagged-json GTest::gtest GTest::gtest_main)
