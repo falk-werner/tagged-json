@@ -22,6 +22,7 @@ private:
     bool read_sint(token & t, bool is_negative);
     bool read_f64(token & t);
     bool read_str(token & t);
+    bool read_bin(token & t);
     bool read_tag(token & t);
     char next_char();
     char peek() const;

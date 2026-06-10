@@ -1,4 +1,5 @@
-#include <tagged-json/tokenizer.hpp>
+#include "tagged-json/tokenizer.hpp"
+#include "tagged-json/b64.hpp"
 
 namespace
 {
@@ -37,7 +38,7 @@ bool tokenizer::next(token & t) noexcept
 {
     try
     {
-        t.value = "";
+        t.value.clear();
         t.u_value = 0;
         t.i_value = 0;
         t.f64_value = 0.0;
@@ -68,6 +69,8 @@ bool tokenizer::next(token & t) noexcept
                 return read_sint(t, true);
             case '\"':
                 return read_str(t);
+            case 'b':
+                return read_bin(t);
             case '[':
                 t.type = token_type::seq_begin;
                 return true;
@@ -130,7 +133,7 @@ void tokenizer::eat_whitespace()
 bool tokenizer::read_comment(token & t)
 {
     t.type = token_type::comment;
-    t.value = "";
+    t.value.clear();
     while (is_comment(peek())) {
         t.value += next_char();
     }
@@ -149,13 +152,13 @@ bool tokenizer::read_keyword(token & t, std::string const & keyword, token_type 
     }
 
     t.type = type;
-    t.value = "";
+    t.value.clear();
     return true;
 }
 
 bool tokenizer::read_uint(token & t)
 {
-    t.value = "";
+    t.value.clear();
     t.u_value = 0;
     while (is_digit(peek())) {
         uint64_t const old_value = t.u_value;
@@ -308,6 +311,41 @@ bool tokenizer::read_str(token & t)
                 value += c;
                 break;
         }
+    }
+}
+
+bool tokenizer::read_bin(token & t)
+{
+    if (next_char() != '\'') {
+        t.type = token_type::error;
+        t.value = "missing quote";
+        return false;
+    }
+
+    bool done = false;
+    while (!done) {
+        char const c = next_char();
+        switch (c) {
+            case '\'':
+                done = true;
+                break;
+            case '\0':
+                t.type = token_type::error;
+                t.value = "unexpected end of string";
+                return false;
+            default:
+                t.value += c;
+        }
+    }
+
+    if (b64_decode(t.value)) {
+        t.type = token_type::bin;
+        return true;
+    }
+    else {
+        t.type = token_type::error;
+        t.value = "unexpected end of string";
+        return false;
     }
 }
 

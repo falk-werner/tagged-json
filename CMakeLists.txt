@@ -6,6 +6,7 @@ option(WITHOUT_TEST "Disable unit test" OFF)
 set(CMAKE_CXX_STANDARD 17)
 
 add_library(tagged-json STATIC
+    lib/tagged-json/b64.cpp
     lib/tagged-json/tokenizer.cpp
 )
 target_include_directories(tagged-json PUBLIC inc)
@@ -20,6 +21,7 @@ find_package(GTest REQUIRED)
 include(GoogleTest)
 
 add_executable(alltests
+    test-src/test_b64.cpp
     test-src/test_tokenizer.cpp
     test-src/test_tokenize_comments.cpp
     test-src/test_tokenize_keywords.cpp
